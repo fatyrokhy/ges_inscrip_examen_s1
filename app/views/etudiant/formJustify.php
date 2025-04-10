@@ -1,4 +1,12 @@
-
+<?php // if ($etudiant != null): ?>
+            <div class="flex justify-between items-center bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-4 rounded-lg">
+                <div>
+                    <p class="text-sm">Bienvenue sur votre espace étudiant</p>
+                </div>
+                <div class="">
+                <h1 class="text-3xl font-bold"><?php //$etudiant["prenom"] ?>  <?php //$etudiant["nom"] ?></h1>
+                <h1><?php //$etudiant["libelle"] ?></div></h1>
+</div>
 
 <form action="" method="POST" enctype="multipart/form-data" class="max-w-md mx-auto mt-10 bg-white p-6 rounded-xl shadow-md space-y-4">
 <input type="hidden" name="controller" value="etudiantController">

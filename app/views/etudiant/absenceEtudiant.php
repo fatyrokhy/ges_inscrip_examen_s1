@@ -1,13 +1,24 @@
+ <!-- Navbar -->
+ <?php // if ($etudiant != null): ?>
+            <div class="flex justify-between items-center bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-4 rounded-lg">
+                <div>
+                    <p class="text-sm">Bienvenue sur votre espace étudiant</p>
+                </div>
+                <div class="">
+                <h1 class="text-3xl font-bold"><?php //$etudiant["prenom"] ?>  <?php //$etudiant["nom"] ?></h1>
+                <h1><?php //$etudiant["libelle"] ?></div></h1>
+</div>
+
 <div class="grid grid-cols-[30%_auto] gap-4">
     <h1>Liste de vos cours</h1>
     <form method="get" class="bg-white p-6 rounded-xl shadow-md grid grid-cols-[70%_auto] gap-4">
     <input type="hidden" name="controller" value="etudiantController">
-    <input type="hidden" name="page" value="coursEtudiant">
+    <input type="hidden" name="page" value="absenceEtudiant">
         <div>
-            <select id="semestre" name="semestre" class="block w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="">-- Sélectionnez --</option>
-                <option value="S1">Semestre 1</option>
-                <option value="S2">Semestre 2</option>
+            <select id="etat" name="etat" class="block w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="">Fitrer par état --</option>
+                <option value="oui"<?= (isset($_GET['etat']) && $_GET['etat'] === 'oui') ? 'selected' : '' ?>>OUI </option>
+                <option value="non"<?= (isset($_GET['etat']) && $_GET['etat'] === 'non') ? 'selected' : '' ?>>NON</option>
             </select>
         </div>
         <button type="submit" class=" bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
