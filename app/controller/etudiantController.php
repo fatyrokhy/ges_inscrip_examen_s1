@@ -1,14 +1,18 @@
 <?php
 require_once("../app/model/etudiantModel.php");
+require_once("../config/helpers.php");
+
 if (isset($_REQUEST["page"])) {
     $page = $_REQUEST["page"];
-
+    NotReturn();
     if ($page == 'coursEtudiant') {
         mesCours();
     } elseif ($page=='absenceEtudiant') {
         mesAbsences();
-    } elseif ($page =='formJustify') {
         justifier();
+
+    } elseif ($page =='formJustify') {
+        // justifier();
     } elseif ($page =='justifyAbsence') {
         mesJustifications();
     }  elseif ($page =='essai') {
@@ -22,12 +26,14 @@ if (isset($_REQUEST["page"])) {
     mesCours();
 }
 
+
+
 function mesCours()  {
     ob_start();
-    $etudiant=infoEtudiant();
-    $cours =coursEtudiant();
+    $etudiant=infoEtudiant($_SESSION['user']["id"]);
+    $cours =coursEtudiant($_SESSION['user']["id"]);
     if (isset($_GET["filtre_date"])){
-        $cours=findCoursByDate($_GET["filtre_date"],1);
+        $cours=findCoursByDate($_GET["filtre_date"],$_SESSION['user']["id"]);
     }
     require_once("../app/views/etudiant/coursEtudiant.php");
     $contenu= ob_get_clean();
@@ -36,9 +42,9 @@ function mesCours()  {
 
 function mesAbsences()  {
     ob_start();
-    $absence=absenceEtudiant();
+    $absence=absenceEtudiant($_SESSION['user']["id"]);
     if (isset($_GET["etat"])){
-        $absence=findAbsenceByetat($_GET["etat"],1);
+        $absence=findAbsenceByetat($_GET["etat"],$_SESSION['user']["id"]);
     }
     require_once("../app/views/etudiant/absenceEtudiant.php");
     $contenu= ob_get_clean();
@@ -47,9 +53,9 @@ function mesAbsences()  {
 
 function mesJustifications() {
     ob_start();
-    $justifications=justifyAbsence();
+    $justifications=justifyAbsence($_SESSION['user']["id"]);
     if (isset($_GET["statut"])){
-        $justifications=findJustifyByStatut($_GET["statut"],1);
+        $justifications=findJustifyByStatut($_GET["statut"],$_SESSION['user']["id"]);
     }
     require_once("../app/views/etudiant/justifyAbsence.php");
     $contenu= ob_get_clean();
@@ -61,7 +67,7 @@ function justifier()  {
     if (isset($_POST["addjustify"])) {
         $justify=ajoutJustification($_GET["absence-id"],$_POST["motif"]);
     }
-    require_once("../app/views/etudiant/formJustify.php");
+    require_once("../app/views/etudiant/absenceEtudiant.php");
     $contenu= ob_get_clean();
     require_once("../app/views/layout/baselayout.php");
 }

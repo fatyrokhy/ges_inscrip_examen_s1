@@ -1,7 +1,7 @@
 <?php
 require_once("../config/database.php");
 // liste des cours d'un etudiant
-function coursEtudiant()
+function coursEtudiant($etudiant)
 {
     $pdo = connexion();
     $cours = $pdo->prepare("SELECT c.id, c.date ,c.heure_debut,c.heure_fin,c.semestre,m.libelle,u.nom,u.prenom FROM inscriptions as i
@@ -12,31 +12,40 @@ function coursEtudiant()
     JOIN modules as m  ON c.module_id=m.id
     JOIN professeurs as p  ON c.professeur_id=p.id
     JOIN utilisateurs as u  ON p.utilisateur_id=u.id
-    WHERE e.id=1;");
-    $cours->execute();
+    WHERE e.id=:etudiant;");
+    $cours->execute([':etudiant'=>$etudiant]);
     return $cours->fetchAll(PDO::FETCH_ASSOC);
 }
 // liste des absences
-function absenceEtudiant()
+function absenceEtudiant($etudiant)
 {
     $pdo = connexion();
     $absence = $pdo->prepare("SELECT c.date ,m.libelle,c.heure_debut,c.heure_fin,a.justification,a.id FROM `absences` a
     JOIN etudiants e ON e.id=a.etudiant_id
     JOIN cours c ON c.id=a.cours_id
     JOIN modules as m  ON c.module_id=m.id
-    WHERE e.id=1;");
-    $absence->execute();
+    WHERE e.id=:etudiant;");
+    $absence->execute([':etudiant'=>$etudiant]);
     return $absence->fetchAll(PDO::FETCH_ASSOC);
 }
-// 
-function infoEtudiant() {
+
+function getEtudiant($id) {
+    $pdo=connexion();
+    $select =$pdo->prepare("SELECT *  FROM etudiants e
+   Where e.utilisateur_id=:id");
+    $select->execute([':id'=>$id]); 
+    $result = $select->fetch(PDO::FETCH_ASSOC); 
+    return $result;
+}
+//
+function infoEtudiant($id) {
     $pdo = connexion(); 
     $etud= $pdo->prepare("SELECT u.nom, u.prenom ,c.libelle FROM `utilisateurs` u
 JOIN etudiants e ON e.utilisateur_id=u.id
 JOIN inscriptions i ON i.etudiant_id=e.id
 JOIN classes c ON i.classe_id=c.id
-WHERE e.id=1;");
-$etud->execute();
+WHERE e.id=:id;");
+$etud->execute([':id'=>$id]);
 return $etud->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -74,7 +83,7 @@ function justifyAbsence()
 function findCoursBySemestre($semestre)
 {
     $pdo = connexion();
-    $cours = $pdo->prepare("SELECT c.id, c.date ,c.heure_debut,c.heure_fin,c.semestre,m.libelle,u.nom,u.prenom FROM inscriptions as i
+    $cours = $pdo->prepare("SELECT c.*,m.libelle,u.nom,u.prenom FROM inscriptions as i
     JOIN classes as cl ON i.classe_id=cl.id
     JOIN etudiants as e ON e.id=i.etudiant_id
     JOIN cours_classes as cc ON cc.classe_id=cl.id
